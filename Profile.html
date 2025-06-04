@@ -1,0 +1,221 @@
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: #121212;
+      color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+    }
+
+    body.dark .container {
+      background: #1f1f1f;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .profile-picture {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .profile-picture img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #999;
+    }
+
+    .profile-picture input {
+      margin-top: 10px;
+    }
+
+    .info label {
+      display: block;
+      margin: 15px 0;
+    }
+
+    .info input,
+    .info select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      flex: 1 1 auto;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .small-button {
+      background: #dc3545;
+    }
+
+    .small-button:hover {
+      background: #a71d2a;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container" id="profileContainer">
+    <div class="header">
+      <h1>👨‍💼 My Profile  </h1><br></br>
+      <button id="themeToggle">🌙 Dark Mode</button>
+    </div>
+
+    <div class="profile-picture">
+      <img id="profileImage" src="https://via.placeholder.com/120" alt="Profile Picture"/>
+      <div>
+        <input type="file" id="imageUpload" accept="image/*"/>
+        <button class="small-button" id="removePic">❌ Remove Picture</button>
+      </div>
+    </div>
+
+    <div class="info">
+      <label>Name: <input type="text" id="name" /></label>
+      <label>Age: <input type="number" id="age" /></label>
+      <label>Gender: 
+        <select id="gender">
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </label>
+      <label>Birthday: <input type="date" id="birthday"/></label>
+      <label>Skills: <input type="text" id="skills"/></label>
+      <label>Projects: <input type="text" id="projects"/></label>
+    </div>
+
+    <div class="actions">
+      <button id="saveData">💾 Save</button>
+      <button id="resetData">🔄 Reset</button>
+      </div>
+  </div>
+
+  <center><footer>
+    &copy; 2025 Amiru Wijayasiriwardhane. All rights reserved.
+  </footer></center>
+
+  
+ 
+  <script>
+    const fields = ['name', 'age', 'gender', 'birthday', 'skills', 'projects'];
+    const themeToggle = document.getElementById('themeToggle');
+    const imageUpload = document.getElementById('imageUpload');
+    const profileImage = document.getElementById('profileImage');
+    const removePicBtn = document.getElementById('removePic');
+    const defaultImage = 'https://via.placeholder.com/120';
+
+    
+    window.onload = function () {
+      fields.forEach(field => {
+        const value = localStorage.getItem(field);
+        if (value !== null) document.getElementById(field).value = value;
+      });
+
+      const img = localStorage.getItem('profileImage');
+      if (img) profileImage.src = img;
+
+      const theme = localStorage.getItem('theme');
+      if (theme === 'dark') {
+        document.body.classList.add('dark');
+        themeToggle.textContent = '☀️ Light Mode';
+      }
+    };
+
+    
+    document.getElementById('saveData').onclick = () => {
+      fields.forEach(field => {
+        localStorage.setItem(field, document.getElementById(field).value);
+      });
+      alert('Data saved successfully!');
+    };
+
+    
+    document.getElementById('resetData').onclick = () => {
+      if (confirm("Are you sure you want to reset all data?")) {
+        fields.forEach(field => {
+          document.getElementById(field).value = '';
+          localStorage.removeItem(field);
+        });
+        profileImage.src = defaultImage;
+        localStorage.removeItem('profileImage');
+      }
+    };
+
+    
+    themeToggle.onclick = () => {
+      document.body.classList.toggle('dark');
+      const dark = document.body.classList.contains('dark');
+      themeToggle.textContent = dark ? '☀️ Light Mode' : '🌙 Dark Mode';
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    };
+
+    
+    imageUpload.onchange = function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          profileImage.src = e.target.result;
+          localStorage.setItem('profileImage', e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    
+    removePicBtn.onclick = () => {
+      profileImage.src = defaultImage;
+      localStorage.removeItem('profileImage');
+    };
+
+       
+
+  </script>
+</body>
+</html>
